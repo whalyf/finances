@@ -5,7 +5,7 @@ export const Header = () => {
   return (
     <WrapperHeader>
       <a href="/">Pessoa</a>|<a href="/contas">Conta</a>|
-      <a href="/movimentacoes">Movimentação</a>
+      <a href="/movimentacoes">Movimentações</a>
     </WrapperHeader>
   );
 };

@@ -1,10 +1,24 @@
-import { Router } from 'express';
+import { Router } from "express";
 
-import exampleController from './app/example/exampleController';
+import UsersController from "./app/controllers/usersController";
+import ContasController from "./app/controllers/contasController";
+import MovimentacoesController from "./app/controllers/movimentacoesController";
 
 const routes = new Router();
 
-routes.get('/', exampleController.helloWorld);
-routes.post('/save', exampleController.saveData);
+routes.get("/", UsersController.helloWorld);
 
+// USERS
+routes.post("/users", UsersController.saveUserData);
+routes.get("/users", UsersController.getUsersData);
+routes.delete("/users/:cpf", UsersController.removeUser);
+
+// CONTAS
+routes.get("/contas", ContasController.getContasData);
+routes.post("/contas", ContasController.saveContaData);
+routes.post("/getContas", ContasController.getContasWhere);
+routes.delete("/contas/:accountNumber", ContasController.removeConta);
+
+// MOVIMENTACOES
+routes.post("/movimentacoes", MovimentacoesController.saveMovimentacaoData);
 export default routes;

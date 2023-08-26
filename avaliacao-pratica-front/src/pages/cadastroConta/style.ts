@@ -3,7 +3,7 @@ import { styled } from "styled-components";
 export const WrapperConta = styled.div`
   display: flex;
   flex-direction: column;
-  
+
   > form {
     align-items: center;
     display: flex;
@@ -18,7 +18,4 @@ export const UserInputs = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  display: flex;
-
-  align-items: flex-end;
 `;

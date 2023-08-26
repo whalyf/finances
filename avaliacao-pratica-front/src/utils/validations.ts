@@ -28,3 +28,23 @@ export const handleNameInputChange = (
     .replace(/\b\w/g, (c) => c.toUpperCase());
   return newText;
 };
+
+export function separateNameAndNumbers(input) {
+  const regex = /([A-Za-z\s]+) - (\d{3}\.\d{3}\.\d{3}-\d{2})/;
+  const match = input.match(regex);
+
+  if (match) {
+    const name = match[1];
+    const numbers = match[2];
+    return {
+      name: name.trim(),
+      numbers: cpfToNumber(numbers),
+    };
+  } else {
+    return null;
+  }
+}
+
+export const formatToMonetary = (number: number) => {
+  return number.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+};

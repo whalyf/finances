@@ -6,12 +6,13 @@ export interface IUserData {
 
 export interface IAccountData {
   accountNumber: number;
-  cpf: IUserData["cpf"];
+  nomeCpf: `${IUserData["cpf"]} - ${IUserData["cpf"]}`;
+  saldo: number;
 }
 
 export interface ITransactionData {
-  account: IAccountData["accountNumber"];
-  cpf: IUserData["cpf"];
+  accountNumberSaldo: `${IAccountData["accountNumber"]} - ${IAccountData["saldo"]}`;
+  nomeCpf: `${IUserData["cpf"]} - ${IUserData["cpf"]}`;
   value: number;
-  type: "deposit" | "withdraw";
+  kind: "deposit" | "withdraw";
 }

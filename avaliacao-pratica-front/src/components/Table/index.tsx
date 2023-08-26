@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import { FaTrashAlt, FaPencilAlt } from "react-icons/fa";
 
 // TYPES
@@ -10,10 +10,18 @@ type TableData = IUserData[] | IAccountData[] | ITransactionData[];
 
 interface ITableProps {
   content: TableData;
+
   page: "contas" | "pessoas" | "movimentacoes";
+  handleRemove: (id: string) => {} | void;
+  handleEdit: (id: number | string) => {} | void;
 }
 
-export const Table: React.FC<ITableProps> = ({ content, page }) => {
+export const Table: React.FC<ITableProps> = ({
+  content,
+  page,
+  handleRemove,
+  handleEdit,
+}) => {
   const handleRenderTable = useCallback(() => {
     switch (page) {
       case "pessoas":
@@ -35,12 +43,12 @@ export const Table: React.FC<ITableProps> = ({ content, page }) => {
                   <TableCell>{formatCPF(item.cpf)}</TableCell>
                   <TableCell>{item.endereco}</TableCell>
                   <TableCell>
-                    <button>
+                    <button onClick={() => handleEdit(item.cpf)}>
                       <FaPencilAlt />
                     </button>
                   </TableCell>
                   <TableCell>
-                    <button>
+                    <button onClick={() => handleRemove(item.cpf)}>
                       <FaTrashAlt />
                     </button>
                   </TableCell>
@@ -64,17 +72,20 @@ export const Table: React.FC<ITableProps> = ({ content, page }) => {
             </thead>
             <tbody>
               {content.map((item, index) => (
-                <TableRow key={item.cpf} isEven={index % 2 === 0}>
+                <TableRow
+                  key={`${item.cpf} - ${item.accountNumber}`}
+                  isEven={index % 2 === 0}
+                >
                   <TableCell>{item.nome}</TableCell>
-                  <TableCell>{item.cpf}</TableCell>
+                  <TableCell>{formatCPF(item.cpf)}</TableCell>
                   <TableCell>{item.accountNumber}</TableCell>
                   <TableCell>
-                    <button>
+                    <button onClick={() => handleEdit(item.accountNumber)}>
                       <FaPencilAlt />
                     </button>
                   </TableCell>
                   <TableCell>
-                    <button>
+                    <button onClick={() => handleRemove(item.accountNumber)}>
                       <FaTrashAlt />
                     </button>
                   </TableCell>

@@ -1,9 +1,9 @@
 import { styled } from "styled-components";
 
-export const WrapperHome = styled.div`
+export const WrapperMovimentacao = styled.div`
   display: flex;
   flex-direction: column;
-  
+
   > form {
     align-items: center;
     display: flex;

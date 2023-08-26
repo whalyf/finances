@@ -12,10 +12,11 @@ import {
 
 interface IInputProps {
   fieldName: string;
+  type?: string;
 }
 
 const InputBase: ForwardRefRenderFunction<HTMLInputElement, IInputProps> = (
-  { fieldName, ...rest },
+  { fieldName, type, ...rest },
   ref
 ) => {
   const [text, setText] = useState();
@@ -30,22 +31,22 @@ const InputBase: ForwardRefRenderFunction<HTMLInputElement, IInputProps> = (
       {fieldName === "CPF" && (
         <input
           ref={ref}
-          {...rest}
           onChange={handleCPFInputChange}
           maxLength={14}
+          {...rest}
         />
       )}
       {fieldName === "Nome" && (
         <input
           ref={ref}
-          {...rest}
           type="text"
           value={text}
           onChange={(e) => convertName(handleNameInputChange(e))}
+          {...rest}
         />
       )}
       {fieldName !== "CPF" && fieldName !== "Nome" && (
-        <input ref={ref} {...rest} />
+        <input type={type} ref={ref} {...rest} />
       )}
     </WrapperInput>
   );

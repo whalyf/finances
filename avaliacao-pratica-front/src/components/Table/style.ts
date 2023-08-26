@@ -8,7 +8,6 @@ export const WrapperTable = styled.table`
   width: 100%;
   border-collapse: collapse;
   border: 2px solid black;
-  max-width: 650px;
   margin: auto;
 `;
 
@@ -28,6 +27,7 @@ export const TableCell = styled.td`
   > button {
     border: none;
     cursor: pointer;
+    background: transparent;
     > svg {
       width: 1rem;
       height: 1rem;
