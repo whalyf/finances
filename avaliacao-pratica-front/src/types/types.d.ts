@@ -14,5 +14,5 @@ export interface ITransactionData {
   accountNumberSaldo: `${IAccountData["accountNumber"]} - ${IAccountData["saldo"]}`;
   nomeCpf: `${IUserData["cpf"]} - ${IUserData["cpf"]}`;
   value: number;
-  kind: "deposit" | "withdraw";
+  kind: "Depositar" | "Retirar";
 }

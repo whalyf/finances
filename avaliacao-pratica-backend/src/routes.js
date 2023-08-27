@@ -21,4 +21,5 @@ routes.delete("/contas/:accountNumber", ContasController.removeConta);
 
 // MOVIMENTACOES
 routes.post("/movimentacoes", MovimentacoesController.saveMovimentacaoData);
+routes.post("/minhasMovimentacoes", MovimentacoesController.getMovimentacoesWhere);
 export default routes;

@@ -1,10 +1,13 @@
+import ContasService from "../services/contasService";
 import MovimentacoesService from "../services/movimentacoesService";
 
 class MovimentacoesController {
-  async getMovimentacoesData(req, res) {
-    const service = new ContasService();
 
-    const result = await service.catchContasData();
+  async getMovimentacoesWhere(req, res) {
+    const service = new MovimentacoesService();
+    const accountNumber = req.body.accountNumber;
+
+    const result = await service.catchMovimentacoesWhere(accountNumber);
     res.status(200).json(result);
   }
 
@@ -12,13 +15,18 @@ class MovimentacoesController {
     const data = req.body;
 
     const service = new MovimentacoesService();
-    const contaAlreadyExists = await service.catchConta(data.accountNumber);
-    if (!Boolean(contaAlreadyExists.length)) {
-      const result = await service.insertConta(data);
+    const serviceConta = new ContasService();
 
+    const conta = await serviceConta.catchConta(data.accountNumber);
+
+    if (data.value >= 0) {
+      const result = await service.insertMovimentacao(data);
+      res.status(200).json({ result });
+    } else if (conta[0].saldo >= Math.abs(data.value)) {
+      const result = await service.insertMovimentacao(data);
       res.status(200).json({ result });
     } else {
-      res.status(400).json({ message: "Conta already exists" });
+      res.status(400).json({ message: "Insufficient balance" });
     }
   }
 }

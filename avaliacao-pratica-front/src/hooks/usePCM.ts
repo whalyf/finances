@@ -36,10 +36,9 @@ export const usePCM = () => {
   const fetchContaWhere = async (cpf: number) => {
     try {
       setLoading(true);
-      const response = await api.post("/getContas", { cpf: cpf });
-      console.log(response);
+      const response = await api.post(`/getContas`, { cpf: cpf });
+
       if (response.data.length > 0) {
-        console.log("aquii");
         setUserContas(response.data);
       } else {
         setUserContas([]);
@@ -55,8 +54,10 @@ export const usePCM = () => {
   const fetchMovimentacoes = async (accountNumber: number) => {
     try {
       setLoading(true);
-      const response = await api.get("/movimentacoes");
-      setContas(response.data);
+      const response = await api.post(`/minhasMovimentacoes`, {
+        accountNumber,
+      });
+      setMovimentacoes(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
@@ -88,5 +89,6 @@ export const usePCM = () => {
     fetchMovimentacoes,
 
     loading,
+    api,
   };
 };

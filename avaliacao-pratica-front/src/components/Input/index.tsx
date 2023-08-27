@@ -30,23 +30,23 @@ const InputBase: ForwardRefRenderFunction<HTMLInputElement, IInputProps> = (
       <span>{fieldName}:</span>
       {fieldName === "CPF" && (
         <input
+          {...rest}
           ref={ref}
           onChange={handleCPFInputChange}
           maxLength={14}
-          {...rest}
         />
       )}
       {fieldName === "Nome" && (
         <input
+          {...rest}
           ref={ref}
           type="text"
           value={text}
           onChange={(e) => convertName(handleNameInputChange(e))}
-          {...rest}
         />
       )}
       {fieldName !== "CPF" && fieldName !== "Nome" && (
-        <input type={type} ref={ref} {...rest} />
+        <input {...rest} type={type} ref={ref} min={0} />
       )}
     </WrapperInput>
   );

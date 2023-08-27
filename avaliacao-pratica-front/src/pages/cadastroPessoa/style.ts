@@ -7,7 +7,7 @@ export const WrapperUser = styled.div`
   > form {
     align-items: center;
     display: flex;
-    width: 400px;
+    width: 500px;
     flex-direction: column;
     gap: 50px;
     margin-bottom: 30px;

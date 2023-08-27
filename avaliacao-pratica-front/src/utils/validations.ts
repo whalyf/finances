@@ -29,7 +29,7 @@ export const handleNameInputChange = (
   return newText;
 };
 
-export function separateNameAndNumbers(input) {
+export function separateNameAndNumbers(input: string) {
   const regex = /([A-Za-z\s]+) - (\d{3}\.\d{3}\.\d{3}-\d{2})/;
   const match = input.match(regex);
 
@@ -45,6 +45,31 @@ export function separateNameAndNumbers(input) {
   }
 }
 
+export function separateAccountNumberAndSaldo(input: string) {
+  const regex = /^(\d+)\s+-\s+Saldo:/;
+  const match = input.match(regex);
+  if (match) {
+    return Number(match[1]);
+  }
+}
+
 export const formatToMonetary = (number: number) => {
   return number.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+};
+
+export const formatDate = (date: Date): string => {
+  const timestamp = new Date(date);
+
+  const day = timestamp.getDate();
+  const month = timestamp.getMonth() + 1; // Months are 0-indexed, so we add 1
+  const year = timestamp.getFullYear();
+  const hours = timestamp.getHours();
+  const minutes = timestamp.getMinutes();
+  const seconds = timestamp.getSeconds();
+
+  const formattedTimestamp = `${day < 10 ? "0" : ""}${day}/${
+    month < 10 ? "0" : ""
+  }${month}/${year} - ${hours}:${minutes}:${seconds}`;
+
+  return formattedTimestamp;
 };

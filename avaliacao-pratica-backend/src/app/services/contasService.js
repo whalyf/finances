@@ -23,6 +23,7 @@ class ContasService {
       console.error("Error fetching data:", error);
     }
   }
+
   async catchContasData() {
     const client = getClient();
     const collection = client.db("avaliacao-pratica").collection("contas");

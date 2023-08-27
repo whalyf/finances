@@ -5,11 +5,12 @@ export const WrapperMovimentacao = styled.div`
   flex-direction: column;
 
   > form {
-    align-items: center;
     display: flex;
-    width: 300px;
+    align-items: center;
+    width: 500px;
     flex-direction: column;
     gap: 50px;
+    margin-bottom: 30px;
   }
 `;
 
@@ -17,7 +18,17 @@ export const UserInputs = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  display: flex;
+`;
 
-  align-items: flex-end;
+export const SelectKind = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 20px;
+
+  > select {
+    border: 2px solid black;
+    height: 1.5rem;
+    display: flex;
+    width: 100%;
+  }
 `;

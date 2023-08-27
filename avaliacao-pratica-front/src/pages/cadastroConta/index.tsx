@@ -45,6 +45,7 @@ export function CadastroConta() {
     await api.delete(`/contas/${id}`);
     fetchContas();
   }, []);
+
   const editarConta = useCallback((id) => {}, []);
   return (
     <WrapperConta>

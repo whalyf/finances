@@ -12,7 +12,7 @@ class ContasController {
     const cpf = req.body.cpf;
     const service = new ContasService();
     const result = await service.catchContasWhere(cpf);
-    console.log(cpf);
+
     res.status(200).json(result);
   }
 

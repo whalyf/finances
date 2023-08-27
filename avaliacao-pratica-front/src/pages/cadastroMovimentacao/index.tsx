@@ -11,22 +11,39 @@ import { usePCM } from "../../hooks/usePCM";
 import { ITransactionData } from "../../types/types";
 
 // STYLES
-import { UserInputs, WrapperMovimentacao } from "./style";
-import { separateNameAndNumbers } from "../../utils/validations";
+import { SelectKind, UserInputs, WrapperMovimentacao } from "./style";
+import {
+  separateAccountNumberAndSaldo,
+  separateNameAndNumbers,
+} from "../../utils/validations";
 import { Header } from "../../components/Header";
+import { Input } from "../../components/Input";
+import api from "../../tools/api";
+import { Table } from "../../components/Table";
 
 export function CadastroMovimentacao() {
   const {
-    movimentacoes,
+    loading,
     fetchMovimentacoes,
     fetchContaWhere,
+
+    movimentacoes,
     pessoas,
     userContas,
   } = usePCM();
   const { register, handleSubmit } = useForm<ITransactionData>();
+  const [cpf, setCpf] = useState<number>(0);
+  const [accountNumber, setAccountNumber] = useState<number>(0);
 
-  const submit = handleSubmit((data) => {
-    console.log(data);
+  const submit = handleSubmit(async (data) => {
+    await api.post("/movimentacoes", {
+      value:
+        data.kind === "Depositar" ? Number(data.value) : Number(-data.value),
+      date: new Date(),
+      accountNumber: separateAccountNumberAndSaldo(data.accountNumberSaldo),
+    });
+    await fetchContaWhere(cpf);
+    await fetchMovimentacoes(accountNumber);
   });
 
   return (
@@ -43,20 +60,48 @@ export function CadastroMovimentacao() {
               const separetedData = separateNameAndNumbers(e.target.value);
               if (separetedData !== null) {
                 fetchContaWhere(separetedData.numbers);
+                setCpf(separetedData.numbers);
               }
             }}
           />
 
-          {userContas && (
-            <SelectConta
-              options={userContas}
-              fieldName="Número da conta"
-              {...register("accountNumberSaldo", { required: true })}
-            />
+          {userContas && userContas.length > 0 && (
+            <>
+              <SelectConta
+                options={userContas}
+                fieldName="Número da conta"
+                {...register("accountNumberSaldo", { required: true })}
+                handleLoadMovimentacoes={fetchMovimentacoes}
+                contaCallback={setAccountNumber}
+              />
+
+              <Input
+                fieldName="Valor"
+                type="number"
+                {...register("value", { required: true })}
+              />
+              <SelectKind>
+                <span>Depósito/Retirada:</span>
+                <select
+                  id="kind"
+                  defaultValue="default"
+                  {...register("kind", { required: true })}
+                >
+                  <option value="default" disabled>
+                    Selecione a transação
+                  </option>
+                  <option defaultValue="deposit">Depositar</option>
+                  <option defaultValue="withdraw">Retirar</option>
+                </select>
+              </SelectKind>
+            </>
           )}
         </UserInputs>
         <Button text="Salvar" type="submit" />
       </form>
+      {movimentacoes.length > 0 && !loading && (
+        <Table page="movimentacoes" content={movimentacoes} />
+      )}
     </WrapperMovimentacao>
   );
 }

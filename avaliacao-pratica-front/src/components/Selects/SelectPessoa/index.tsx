@@ -18,7 +18,10 @@ export const SelectPessoa = React.forwardRef<HTMLSelectElement, ISelectProps>(
     return (
       <WrapperSelect>
         <span>{fieldName}:</span>
-        <select ref={ref} {...rest}>
+        <select ref={ref} {...rest} defaultValue="default">
+          <option value="default" disabled>
+            Selecione um usuário
+          </option>
           {options.map((item, index) => (
             <option key={index}>{`${item.nome} - ${formatCPF(
               item.cpf
