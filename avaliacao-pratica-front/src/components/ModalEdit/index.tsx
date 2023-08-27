@@ -1,29 +1,46 @@
 import React from "react";
 import { ModalTitle, WrapperModal } from "./style";
 import { Button } from "../Button";
+// TYPES
+import { IUserData } from "../../types/types";
+import { useForm } from "react-hook-form";
 interface IModalProps {
-  type: "edit" | "delete";
-  handleOpenCloseModal: () => void;
-  handleDelete: () => void;
+  handleOpenCloseModal: (person: IUserData | null) => void;
+  itemToEdit: IUserData;
+  handleEdit: (person: IUserData) => void;
 }
-export const Modal = ({
-  type,
+export const ModalEdit = ({
   handleOpenCloseModal,
-  handleDelete,
+  handleEdit,
+  itemToEdit,
 }: IModalProps) => {
+  const { register, handleSubmit } = useForm();
+  const submit = handleSubmit(async (data) => {
+    handleEdit({
+      cpf: itemToEdit.cpf,
+      nome: data.novoNome,
+      endereco: data.novoEndereco,
+    });
+  });
   return (
-    <>
-      {type === "delete" ? (
-        <WrapperModal>
-          <ModalTitle>Delete ?</ModalTitle>
-          <div>
-            <Button text="Confirm" onClick={handleDelete} />
-            <Button text="Cancel" onClick={handleOpenCloseModal} />
-          </div>
-        </WrapperModal>
-      ) : (
-        <WrapperModal>EDIT</WrapperModal>
-      )}
-    </>
+    <WrapperModal>
+      <ModalTitle>Edit</ModalTitle>
+      <form onSubmit={submit}>
+        <input
+          type="text"
+          defaultValue={itemToEdit.nome}
+          {...register("novoNome")}
+        />
+        <input
+          type="text"
+          defaultValue={itemToEdit.endereco}
+          {...register("novoEndereco")}
+        />
+        <div>
+          <Button text="Edit" type="submit" />
+          <Button text="Cancel" onClick={() => handleOpenCloseModal(null)} />
+        </div>
+      </form>
+    </WrapperModal>
   );
 };

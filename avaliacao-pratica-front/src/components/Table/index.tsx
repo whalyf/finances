@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import { FaTrashAlt, FaPencilAlt } from "react-icons/fa";
+import { FaTrashAlt, FaPencilAlt, FaCheck } from "react-icons/fa";
 
 // TYPES
 import { IAccountData, ITransactionData, IUserData } from "../../types/types";
@@ -10,14 +10,17 @@ import {
   formatDate,
   formatToMonetary,
 } from "../../utils/validations";
+import { ModalDelete } from "../ModalDelete";
+import { usePCM } from "../../hooks/usePCM";
+import { ModalEdit } from "../ModalEdit";
 type TableData = IUserData[] | IAccountData[] | ITransactionData[];
 
 interface ITableProps {
   content: TableData;
 
   page: "contas" | "pessoas" | "movimentacoes";
-  handleRemove?: (id: string) => {} | void;
-  handleEdit?: (id: number | string) => {} | void;
+  handleRemove: (id: string | number) => void;
+  handleEdit: (person: IUserData) => void;
 }
 
 export const Table: React.FC<ITableProps> = ({
@@ -26,7 +29,13 @@ export const Table: React.FC<ITableProps> = ({
   handleRemove,
   handleEdit,
 }) => {
-  const handleRenderTable = useCallback(() => {
+  const [itemToManipulate, setItemToManipulate] = useState<
+    number | string | null
+  >(null);
+
+  const [pessoaToEdit, setPessoaToEdit] = useState<IUserData | null>();
+
+  const handleRender = () => {
     switch (page) {
       case "pessoas":
         return (
@@ -47,27 +56,31 @@ export const Table: React.FC<ITableProps> = ({
                   <TableCell>{formatCPF(item.cpf)}</TableCell>
                   <TableCell>{item.endereco}</TableCell>
                   <TableCell>
-                    <button
-                      onClick={() => {
-                        if (typeof handleEdit === "function") {
-                          handleEdit(item.cpf);
-                        }
-                      }}
-                    >
+                    <button onClick={() => setPessoaToEdit(item)}>
                       <FaPencilAlt />
                     </button>
                   </TableCell>
+
                   <TableCell>
-                    <button
-                      onClick={() => {
-                        if (typeof handleRemove === "function") {
-                          handleRemove(item.accountNumber);
-                        }
-                      }}
-                    >
+                    <button onClick={() => setItemToManipulate(item.cpf)}>
                       <FaTrashAlt />
                     </button>
                   </TableCell>
+
+                  {!!itemToManipulate && (
+                    <ModalDelete
+                      handleOpenCloseModal={setItemToManipulate}
+                      itemToManipulate={itemToManipulate}
+                      handleDelete={handleRemove}
+                    />
+                  )}
+                  {!!pessoaToEdit && (
+                    <ModalEdit
+                      itemToEdit={pessoaToEdit}
+                      handleOpenCloseModal={setPessoaToEdit}
+                      handleEdit={handleEdit}
+                    />
+                  )}
                 </TableRow>
               ))}
             </tbody>
@@ -82,7 +95,7 @@ export const Table: React.FC<ITableProps> = ({
                 <TableHeader>Nome</TableHeader>
                 <TableHeader>CPF</TableHeader>
                 <TableHeader>Número da conta</TableHeader>
-                <TableHeader>Editar</TableHeader>
+                {/* <TableHeader>Editar</TableHeader> */}
                 <TableHeader>Remover</TableHeader>
               </tr>
             </thead>
@@ -95,7 +108,7 @@ export const Table: React.FC<ITableProps> = ({
                   <TableCell>{item.nome}</TableCell>
                   <TableCell>{formatCPF(item.cpf)}</TableCell>
                   <TableCell>{item.accountNumber}</TableCell>
-                  <TableCell>
+                  {/* <TableCell>
                     <button
                       onClick={() => {
                         if (typeof handleEdit === "function") {
@@ -105,18 +118,21 @@ export const Table: React.FC<ITableProps> = ({
                     >
                       <FaPencilAlt />
                     </button>
-                  </TableCell>
+                  </TableCell> */}
                   <TableCell>
                     <button
-                      onClick={() => {
-                        if (typeof handleRemove === "function") {
-                          handleRemove(item.accountNumber);
-                        }
-                      }}
+                      onClick={() => setItemToManipulate(item.accountNumber)}
                     >
                       <FaTrashAlt />
                     </button>
                   </TableCell>
+                  {!!itemToManipulate && (
+                    <ModalDelete
+                      handleOpenCloseModal={setItemToManipulate}
+                      itemToManipulate={itemToManipulate}
+                      handleDelete={handleRemove}
+                    />
+                  )}
                 </TableRow>
               ))}
             </tbody>
@@ -143,6 +159,6 @@ export const Table: React.FC<ITableProps> = ({
           </>
         );
     }
-  }, []);
-  return <WrapperTable>{handleRenderTable()}</WrapperTable>;
+  };
+  return <WrapperTable>{handleRender()}</WrapperTable>;
 };

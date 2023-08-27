@@ -15,13 +15,12 @@ export const WrapperTable = styled.table`
 export const TableHeader = styled.th`
   padding: 8px;
   border-right: 2px solid black;
-  background-color: #A9A9A9;
+  background-color: #a9a9a9;
 `;
 
 export const TableRow = styled.tr<TableRowProps>`
-  background-color: ${(props) => (props.isEven ? "#f2f2f2" : "transparent")};
   background-color: ${(props) =>
-    props.isNegative ? "#F47174" : "transparent"};
+    props.isEven ? "#D3D3D3" : props.isNegative ? "#F47174" : "transparent"};
 `;
 
 export const TableCell = styled.td`

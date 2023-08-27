@@ -20,30 +20,38 @@ import { UserInputs, WrapperConta } from "./style";
 import api from "../../tools/api";
 
 export function CadastroConta() {
-  const { fetchContas, fetchPessoas, pessoas, contas, loading } = usePCM();
+  const { fetchContas, pessoas, contas, loading, toast } = usePCM();
   const { register, handleSubmit } = useForm<IAccountData>();
 
   const submit = handleSubmit(async (data) => {
     const split = await separateNameAndNumbers(data.nomeCpf);
     if (split) {
-      await api.post("/contas", {
+      const result = await api.post("/contas", {
         accountNumber: cpfToNumber(data.accountNumber.toString()),
         nome: split.name,
         cpf: split.numbers,
         saldo: 0,
       });
+      console.log(result)
+      if (result.status === 270) {
+        toast.error(result.data?.message);
+      }
+      if (result.status === 200) {
+        toast.success(result.data?.message);
+        fetchContas();
+      }
     }
-    fetchContas();
   });
 
-  useEffect(() => {
-    fetchPessoas();
-    fetchContas();
-  }, []);
-
   const removerConta = useCallback(async (id: number | string) => {
-    await api.delete(`/contas/${id}`);
-    fetchContas();
+    const result = await api.delete(`/contas/${id}`);
+    if (result.status === 270) {
+      toast.error(result.data?.message);
+    }
+    if (result.status === 200) {
+      toast.success(result.data?.message);
+      fetchContas();
+    }
   }, []);
 
   const editarConta = useCallback((id) => {}, []);

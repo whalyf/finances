@@ -34,16 +34,23 @@ export function CadastroMovimentacao() {
   const { register, handleSubmit } = useForm<ITransactionData>();
   const [cpf, setCpf] = useState<number>(0);
   const [accountNumber, setAccountNumber] = useState<number>(0);
+  const { toast } = usePCM();
 
   const submit = handleSubmit(async (data) => {
-    await api.post("/movimentacoes", {
+    const response = await api.post("/movimentacoes", {
       value:
         data.kind === "Depositar" ? Number(data.value) : Number(-data.value),
       date: new Date(),
       accountNumber: separateAccountNumberAndSaldo(data.accountNumberSaldo),
     });
-    await fetchContaWhere(cpf);
-    await fetchMovimentacoes(accountNumber);
+    if (response.status === 270) {
+      toast.error(response.data?.message);
+    }
+    if (response.status === 200) {
+      toast.success(response.data?.message);
+      await fetchContaWhere(cpf);
+      await fetchMovimentacoes(accountNumber);
+    }
   });
 
   return (
@@ -100,7 +107,12 @@ export function CadastroMovimentacao() {
         <Button text="Salvar" type="submit" />
       </form>
       {movimentacoes.length > 0 && !loading && (
-        <Table page="movimentacoes" content={movimentacoes} />
+        <Table
+          page="movimentacoes"
+          content={movimentacoes}
+          handleRemove={() => {}}
+          handleEdit={() => {}}
+        />
       )}
     </WrapperMovimentacao>
   );

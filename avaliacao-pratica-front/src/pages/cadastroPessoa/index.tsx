@@ -6,7 +6,6 @@ import { Title } from "../../components/Title";
 import { Button } from "../../components/Button";
 import { Table } from "../../components/Table";
 import { Header } from "../../components/Header";
-import { Modal } from "../../components/ModalEdit";
 
 // UTILS
 import { cpfToNumber } from "../../utils/validations";
@@ -17,46 +16,61 @@ import { IUserData } from "../../types/types";
 
 // STYLES
 import { UserInputs, WrapperUser } from "./style";
+import { usePCM } from "../../hooks/usePCM";
+import { ModalDelete } from "../../components/ModalDelete";
 
 export function CadastroPessoa() {
+  const {
+    fetchPessoas,
+    pessoas,
+    loading,
+
+    toast,
+  } = usePCM();
+
   const { register, handleSubmit } = useForm<IUserData>();
-  const [loading, setLoading] = useState(false);
-  const [pessoas, setPessoas] = useState<IUserData[]>([]);
-  const [openCloseModal, setOpenCloseModal] = useState(true);
-
-  const handleModal = useCallback(() => {
-    setOpenCloseModal(!openCloseModal);
-  }, []);
-
-  const fetchData = async () => {
-    try {
-      setLoading(true);
-      const response = await api.get("/users");
-      setPessoas(response.data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const submit = handleSubmit(async (data) => {
-    await api.post("/users", {
+    const result = await api.post("/users", {
       ...data,
       cpf: cpfToNumber(data.cpf.toString()),
     });
-    fetchData();
+
+    if (result.status === 270) {
+      toast.error(result.data?.message);
+    }
+
+    if (result.status === 200) {
+      toast.success(result.data?.message);
+      fetchPessoas();
+    }
   });
 
-  useEffect(() => {
-    fetchData();
+  const removerPessoa = useCallback(async (cpf: string | number) => {
+    const result = await api.delete(`/users/${cpf}`);
+    if (result.status === 270) {
+      toast.error(result.data?.message);
+    }
+    if (result.status === 200) {
+      toast.success(result.data?.message);
+      fetchPessoas();
+    }
   }, []);
 
-  const removerPessoa = useCallback(async (cpf: string) => {
-    await api.delete(`/users/${cpf}`);
-  }, []);
+  const editarPessoa = useCallback(async (person: IUserData) => {
+    const result = await api.put(`/users/${person.cpf}`, {
+      nome: person.nome,
+      endereco: person.endereco,
+    });
 
-  const editarPessoa = useCallback(async (cpf: string | number) => {}, []);
+    if (result.status === 270) {
+      toast.error(result.data?.message);
+    }
+    if (result.status === 200) {
+      toast.success(result.data?.message);
+      fetchPessoas();
+    }
+  }, []);
 
   return (
     <WrapperUser>
@@ -77,8 +91,8 @@ export function CadastroPessoa() {
         <Table
           page="pessoas"
           content={pessoas}
-          handleRemove={removerPessoa}
           handleEdit={editarPessoa}
+          handleRemove={removerPessoa}
         />
       )}
     </WrapperUser>

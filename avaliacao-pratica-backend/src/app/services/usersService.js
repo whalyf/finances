@@ -48,6 +48,21 @@ class UsersService {
       console.error("Error deleting data:", error);
     }
   }
+
+  async updateUserByCPF(cpf, updatedData) {
+    const client = getClient();
+    const collection = client.db("avaliacao-pratica").collection("colecao");
+    try {
+      const result = await collection.updateOne(
+        { cpf: cpf },
+        { $set: updatedData }
+      );
+
+      return result;
+    } catch (error) {
+      console.error("Error updating data:", error);
+    }
+  }
 }
 
 export default UsersService;

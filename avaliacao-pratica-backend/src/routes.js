@@ -12,6 +12,7 @@ routes.get("/", UsersController.helloWorld);
 routes.post("/users", UsersController.saveUserData);
 routes.get("/users", UsersController.getUsersData);
 routes.delete("/users/:cpf", UsersController.removeUser);
+routes.put("/users/:cpf", UsersController.updateUser);
 
 // CONTAS
 routes.get("/contas", ContasController.getContasData);
@@ -21,5 +22,8 @@ routes.delete("/contas/:accountNumber", ContasController.removeConta);
 
 // MOVIMENTACOES
 routes.post("/movimentacoes", MovimentacoesController.saveMovimentacaoData);
-routes.post("/minhasMovimentacoes", MovimentacoesController.getMovimentacoesWhere);
+routes.post(
+  "/minhasMovimentacoes",
+  MovimentacoesController.getMovimentacoesWhere
+);
 export default routes;

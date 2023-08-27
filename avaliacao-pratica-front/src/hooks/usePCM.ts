@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import api from "../tools/api";
+import { toast } from "react-toastify";
 import { IAccountData, ITransactionData, IUserData } from "../types/types";
 
 export const usePCM = () => {
@@ -7,6 +8,7 @@ export const usePCM = () => {
   const [contas, setContas] = useState<IAccountData[]>([]);
   const [userContas, setUserContas] = useState<IAccountData[]>();
   const [movimentacoes, setMovimentacoes] = useState<ITransactionData[]>([]);
+
   const [loading, setLoading] = useState(false);
 
   const fetchPessoas = async () => {
@@ -34,6 +36,7 @@ export const usePCM = () => {
   };
 
   const fetchContaWhere = async (cpf: number) => {
+    setMovimentacoes([]);
     try {
       setLoading(true);
       const response = await api.post(`/getContas`, { cpf: cpf });
@@ -57,6 +60,7 @@ export const usePCM = () => {
       const response = await api.post(`/minhasMovimentacoes`, {
         accountNumber,
       });
+
       setMovimentacoes(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -86,9 +90,12 @@ export const usePCM = () => {
     fetchContaWhere,
 
     movimentacoes,
+    setMovimentacoes,
     fetchMovimentacoes,
 
     loading,
     api,
+
+    toast,
   };
 };
