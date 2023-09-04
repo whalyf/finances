@@ -1,3 +1,4 @@
+import React from 'react';
 export const handleCPFInputChange = (
   event: React.ChangeEvent<HTMLInputElement>
 ) => {
